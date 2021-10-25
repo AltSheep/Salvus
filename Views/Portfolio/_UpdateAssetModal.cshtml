@@ -1,0 +1,92 @@
+<!-- Modal -->
+<div class="modal fade" id="UpdateAssetModal" tabindex="-1" aria-labelledby="UpdateAssetModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="UpdateAssetModalLabel">Update Your Asset</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="ui-widget ui-front">
+          <label for="ammount">New Holdings:</label>
+          <input id="ammount">
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="update">Update Asset</button>
+        <button type="submit" class="btn btn-primary" id="delete">Delete Asset</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function()
+  {
+    var assetToUpdate = "";
+
+    // save which asset the user wants to update
+    $(".updateButton").click(function() 
+    {
+      assetToUpdate = $(this).attr("id");
+    });
+
+    // update the ammount of asset the user owns
+    $("#update").click(function() 
+    {
+      var payload = 
+      {
+        'symbol': assetToUpdate,
+        'ammount': $("#ammount").val()
+      };
+
+      $.ajax(
+      {
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "api/portfolioapi/update",
+        data: JSON.stringify(payload),
+        datatype: "json",
+        success: function (result) 
+        {
+          //do something
+          location.reload();
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+          alert(" conection to the server failed ");
+          console.log("error: " + errorthrown);
+        }
+      });
+    });
+
+    // delete the asset from the users portfolio
+    $("#delete").click(function() 
+    {
+      var payload = 
+      {
+        'symbol': assetToUpdate,
+        'ammount': 0
+      };
+
+      $.ajax(
+      {
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "api/portfolioapi/delete",
+        data: JSON.stringify(payload),
+        datatype: "json",
+        success: function (result) 
+        {
+          location.reload();
+        },
+      });
+    });
+  });
+</script>

@@ -10,6 +10,7 @@
         <li class="nav-item">
 
             @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class="nav-link" })
+            
 
         </li>
         <li class="nav-item">
@@ -19,22 +20,18 @@
         </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Exchange</a>
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Exchange - Coming Soon</a>
           <div class="dropdown-menu">
-            
-            @Html.ActionLink("Bitcoin", "Index", "Purchase", new { area = "" }, new { @class="dropdown-item" })
-            @Html.ActionLink("Ethereum", "Index", "Purchase", new { area = "" }, new { @class="dropdown-item" })
-            @Html.ActionLink("Polkadot", "Index", "Purchase", new { area = "" }, new { @class="dropdown-item" })
-            <div class="dropdown-divider"></div>
-            @Html.ActionLink("Withdraw", "Index", "Purchase", new { area = "" }, new { @class="dropdown-item" })
 
+            @Html.ActionLink("Bitcoin", "Index", "Purchase", new { area = "" }, new { @class="dropdown-item" })
+            @Html.ActionLink("Polkadot", "Index", "Purchase", new { area = "" }, new { @class="dropdown-item" })
+          
           </div>
         </li>
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-sm-2" type="text" placeholder="Search">
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-      </form>
     </div>
+
+      <partial name="_LoginPartial" />
+
   </div>
 </nav>

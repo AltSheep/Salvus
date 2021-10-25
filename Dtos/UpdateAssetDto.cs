@@ -1,20 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
+using Salvus.Models;
 
-namespace Salvus.Models
+namespace Salvus.Dtos
 {
-    public class Coin
+    public class UpdateAssetDto
     {
-        [JsonPropertyName("id")]
-        [Key]
-        public string Id { get; set; }
-        
         [JsonPropertyName("symbol")]
         [Required]
         public string Symbol { get; set; }
         
-        [JsonPropertyName("name")]
+        [JsonPropertyName("ammount")]
         [Required]
-        public string Name { get; set; }
+        public float Ammount { get; set; }
     }
 }

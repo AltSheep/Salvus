@@ -1,0 +1,133 @@
+@model IEnumerable<Salvus.Models.Asset>
+
+<script src="~/lib/jquery-number/dist/jquery-number.min.js"></script>
+
+<div class="container px-4">
+    <div class="row gx-5 border">
+        
+        <div class="col border m-2 text-center">
+            <h4 class="m-2" id="balance">Balance: $0.00$</h4>
+        </div>
+        <div class="col border m-2 text-center">
+            <h4 class="m-2" id="24hour">24 Hour Change: $0.00</h4>
+        </div>
+
+        <div class="col border m-2 text-center">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary justify-content-center align-self-center" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Asset</button>
+        </div>
+
+    </div>
+</div>
+
+<table id="portfolio" class="table table-bordered table-hover mt-5">
+    <thread>
+        <tr>
+            <th>Asset</th>
+            <th>Price</th>
+            <th>24 Hour Change</th>
+            <th>Market Cap</th>
+            <th>Holdings</th>
+            <th>Holdings Value</th>
+            <th>Update</th>
+        </tr>
+    </thread>
+
+    <tbody>
+        @foreach (var asset in Model)
+        {
+            <tr class="asset" id="@asset.Coin.Id">
+                <td> <div class="name">@asset.Coin.Name</div>  <div>(@asset.Coin.Symbol)</div> <div class="coinId" style="visibility: hidden; display:inline;">@asset.Coin.Id</div> </td>
+                <td id="usd">NA</td>
+                <th id="usd_24h_change">NA</th>
+                <th id="usd_market_cap">NA</th>
+                <td>@asset.Ammount @asset.Coin.Symbol</td>
+                <td id="value">@asset.Ammount</td>
+                <td><button class="btn btn-primary justify-content-center align-self-center updateButton" data-bs-toggle="modal" data-bs-target="#UpdateAssetModal" id="@asset.Coin.Symbol">Update Asset</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function()
+    {
+        let coins = new Array();
+
+        var all = $(".coinId").each(function() 
+        {
+            coins.push($(this).text());
+
+        }).get();
+
+        let coinsToGet = coins[0];
+        for(let i = 1; i < coins.length; i++)
+        {
+            coinsToGet = `${coinsToGet}%2C${coins[i]}`;
+        }
+
+        let url = `https://api.coingecko.com/api/v3/simple/price?ids=${coinsToGet}&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`;
+
+        console.log(url);
+
+        $.getJSON(url, function(data)
+        {
+            var portfolioValue = 0;
+            var portfolioValue24Hour = 0;
+
+            // loop over all assets (tables y axis)
+            $.each( data, function(asset, assetInfo ) 
+            {
+                var assetPrice;
+
+                // loop over all info (tables x axis)
+                $.each(assetInfo, function(key, info)
+                {
+                    $(`#${asset}`).find(`#${key}`).text($.number(info, 2 ));
+
+                    if(key == "usd") 
+                    { 
+                        $(`#${asset}`).find(`#${key}`).text("$" + $.number(info, 2 )); 
+                        var ammountOfToken = $(`#${asset}`).find(`#value`).text();
+                        $(`#${asset}`).find(`#value`).text("$" + $.number(info * ammountOfToken, 2 ));
+                        portfolioValue += info * ammountOfToken;
+
+                        // save asset price for calcating portfolio change later
+                        assetPrice = info;
+                        
+                    }
+                    if(key == "usd_24h_change") 
+                    { 
+                        $(`#${asset}`).find(`#${key}`).text($.number(info, 2 ) + "%"); 
+                        $(`#${asset}`).find(`#${key}`).css('color', 'green');
+                        if(info < 0)
+                        {
+                            $(`#${asset}`).find(`#${key}`).css('color', 'red');
+                        }
+
+                        portfolioValue24Hour += ((info * .01 + 1) * assetPrice);
+                        
+                    }
+                    if(key == "usd_market_cap") 
+                    { 
+                        $(`#${asset}`).find(`#${key}`).text("$" + $.number(info, 2 ));
+                    }
+                });
+            });
+
+            // set porfolio total value
+            $(`#balance`).text("Balance: $" + $.number(portfolioValue, 2));
+
+            // set porflio 24 hour change percentage
+            var percentChange = (portfolioValue - portfolioValue24Hour) / portfolioValue;
+            $(`#24hour`).text(`24 Hour Change: ${$.number(percentChange, 2)}%`);
+            $(`#24hour`).css({'color': 'green'});
+            if(percentChange < 0)
+            {
+                $(`#24hour`).css({'color': 'red'});
+            }
+            console.log(portfolioValue24Hour + " : " + portfolioValue);
+
+        });
+    });
+</script>

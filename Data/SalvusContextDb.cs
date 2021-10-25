@@ -1,15 +1,18 @@
 using Salvus.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Salvus.Data
 {
-    public class CommanderContext : DbContext
+    public class SalvusContextDb : IdentityDbContext
     {
-        public CommanderContext(DbContextOptions<CommanderContext> opt) : base(opt)
+        public SalvusContextDb(DbContextOptions<SalvusContextDb> opt) : base(opt)
         {
             
         }
 
-        public DbSet<Coin> coins { get; set; }
+        public DbSet<Coin> Coins { get; set; }
+
+        public DbSet<Asset> Assets { get; set;}
     }
 }

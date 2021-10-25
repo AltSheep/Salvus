@@ -1,0 +1,94 @@
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add An Asset</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="ui-widget ui-front">
+
+          <label for="tags">Coin Symbol: </label>
+          <input id="tags">
+
+          
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="add">Add Asset</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  // Script For Adding New Coin To Portfolio
+  $(document).ready(function()
+  {
+    $( "#add" ).click(function() 
+    {
+      var payload = 
+      {
+        'id': $("#tags").val(),
+        'symbol': 'null',
+        'name': 'null'
+      }
+
+      $.ajax(
+      {
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: "api/portfolioapi",
+        data: JSON.stringify(payload),
+        datatype: "json",
+        success: function (result) 
+        {
+          //do something
+          location.reload();
+        },
+        error: function (xmlhttprequest, textstatus, errorthrown) {
+          alert(" conection to the server failed ");
+          console.log("error: " + errorthrown);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  // Script For Auto Complete Token List
+  $(document).ready(function () 
+  {    
+
+    var coinList = [];
+    $.ajax(
+    {    
+      url: 'api/salvus',  
+      dataType: "json",  
+      method: 'get',  
+      success: function (data) 
+      {
+        coinList = data;
+
+        console.log(coinList)
+        var availableTags = coinList;
+        $( "#tags" ).autocomplete(
+        {
+          source: function(request, response) 
+          {
+            var results = $.ui.autocomplete.filter(availableTags, request.term);
+            response(results.slice(0, 10));
+          }
+        });
+      }   
+    });
+  })    
+  </script>
