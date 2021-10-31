@@ -7,9 +7,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Salvus.Data;
-using Microsoft.AspNet.Identity;
 using Salvus.Dtos;
 using Salvus.Models;
+using System.Security.Claims;
 
 namespace Salvus.Controllers
 {
@@ -30,7 +30,8 @@ namespace Salvus.Controllers
         {
             if(User.Identity.IsAuthenticated)
             {
-                var assets = _repo.GetUserAssets(User.Identity.GetUserId());
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var assets = _repo.GetUserAssets(userId);
 
                 return View(assets);
             }
@@ -49,14 +50,16 @@ namespace Salvus.Controllers
 
             if(coin == null) { return NotFound(); }
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var newAsset = new Asset();
             newAsset.Ammount = 0;
             newAsset.Coin = coin;
             newAsset.CoinId = coin.Id;
-            newAsset.User = _repo.GetUser(User.Identity.GetUserId());
-            newAsset.UserId = User.Identity.GetUserId();
+            newAsset.User = _repo.GetUser(userId);
+            newAsset.UserId = userId;
 
-            _repo.AddAssetToUser(newAsset, User.Identity.GetUserId());
+            _repo.AddAssetToUser(newAsset, userId);
 
             _repo.SaveChanges();
 

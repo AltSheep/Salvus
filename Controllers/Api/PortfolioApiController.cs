@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNet.Identity;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Salvus.Data;
@@ -59,14 +59,15 @@ namespace Salvus.Controllers.Api
 
             Console.WriteLine("COIN TRYING TO ADD IS FOUND: " + newCoin.Id);
 
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var newAsset = new Asset();
             newAsset.Ammount = 0;
             newAsset.Coin = coin;
             newAsset.CoinId = coin.Id;
-            newAsset.User = _repo.GetUser(User.Identity.GetUserId());
-            newAsset.UserId = User.Identity.GetUserId();
+            newAsset.User = _repo.GetUser(userId);
+            newAsset.UserId = userId;
 
-            _repo.AddAssetToUser(newAsset, User.Identity.GetUserId());
+            _repo.AddAssetToUser(newAsset, userId);
 
             _repo.SaveChanges();
 
@@ -79,10 +80,12 @@ namespace Salvus.Controllers.Api
         {
             Console.WriteLine($"UPDATE ASSET: {updateAssetDto.Symbol}");
 
-            var newAsset = _repo.GetUserAssetWithSymbol(User.Identity.GetUserId(), updateAssetDto.Symbol);
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var newAsset = _repo.GetUserAssetWithSymbol(userId, updateAssetDto.Symbol);
             newAsset.Ammount = updateAssetDto.Ammount;
 
-            _repo.UpdateUserAsset(User.Identity.GetUserId(), updateAssetDto.Symbol, newAsset);
+            _repo.UpdateUserAsset(userId, updateAssetDto.Symbol, newAsset);
             _repo.SaveChanges();
 
             return Ok(_mapper.Map<AssetDto>(newAsset));
@@ -94,7 +97,9 @@ namespace Salvus.Controllers.Api
         {
             Console.WriteLine($"DELETE ASSET: {updateAssetDto.Symbol}");
 
-            var newAsset = _repo.RemoveAssetFromUser(updateAssetDto.Symbol, User.Identity.GetUserId());
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var newAsset = _repo.RemoveAssetFromUser(updateAssetDto.Symbol, userId);
             _repo.SaveChanges();
 
             return Ok(_mapper.Map<AssetDto>(newAsset));

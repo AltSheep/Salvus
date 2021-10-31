@@ -1,14 +1,14 @@
 {
-  "ConnectionStrings": {
-    "TestingDatabaseConnection": "Server=SHEEP\\SQLEXPRESS;Initial Catalog=SalvusDB;User ID=Salvus;Password=123;",
+  "ConnectionStrings": 
+  {
     "SalvusIdentityDbContextConnection": "Server=SHEEP\\SQLEXPRESS;Initial Catalog=SalvusDB;User ID=Salvus;Password=123;"
   },
+
   "Logging": {
     "LogLevel": {
       "Default": "Information",
       "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information"
     }
-  },
-  "AllowedHosts": "*"
+  }
 }
