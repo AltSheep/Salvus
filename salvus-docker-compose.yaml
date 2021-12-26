@@ -1,0 +1,25 @@
+version: '3.3'
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server
+    user: root
+    ports:
+      - 1434:1433
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "V}3FL|>]]lPjXdh0sQSwH9H&JPdX61YP"
+    volumes:
+      - db-data:/var/opt/mssql/data
+  web:
+    image: calebhooper/salvus
+    ports:
+      - 5000:80
+    depends_on:
+      - db
+    environment:
+      DOTNET_ENVIRONMENT: "Production"
+      ASPNETCORE_ENVIRONMENT: "Production"
+
+volumes:
+  db-data:
+    driver: local

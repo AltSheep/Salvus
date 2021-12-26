@@ -7,12 +7,19 @@
 
     <div class="collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
+
         <li class="nav-item">
 
             @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class="nav-link" })
-            
+          
+        </li>
+
+        <li class="nav-item">
+
+          @Html.ActionLink("Crypto-Assets", "Index", "Assets", new { area = "" }, new { @class="nav-link" })
 
         </li>
+
         <li class="nav-item">
 
           @Html.ActionLink("Portfolio", "Index", "Portfolio", new { area = "" }, new { @class="nav-link" })
@@ -20,11 +27,10 @@
         </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Exchange - Coming Soon</a>
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Exchange</a>
           <div class="dropdown-menu">
 
-            @Html.ActionLink("Bitcoin", "Index", "Purchase", new { area = "" }, new { @class="dropdown-item" })
-            @Html.ActionLink("Polkadot", "Index", "Purchase", new { area = "" }, new { @class="dropdown-item" })
+            @Html.ActionLink("Coming Soon", "Index", "Purchase", new { area = "" }, new { @class="dropdown-item" })
           
           </div>
         </li>

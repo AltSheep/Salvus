@@ -10,7 +10,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Quartz;
 using Salvus.Data;
+using Salvus.Services;
 
 namespace Salvus
 {
@@ -18,6 +21,9 @@ namespace Salvus
     {
         public Startup(IConfiguration configuration)
         {
+            Console.WriteLine("STARTUP");
+
+
             Configuration = configuration;
         }
 
@@ -26,12 +32,15 @@ namespace Salvus
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SalvusContextDb>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("TestingDatabaseConnection")));
+            Console.WriteLine("CONFIGURE SERVICES");
 
-
-            
+            services.AddDbContext<SalvusContextDb>
+            (
+                options => options.UseSqlServer
+                (
+                    Configuration.GetConnectionString("TestingDatabaseConnection")
+                )
+            );
 
             // setup automapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -41,7 +50,13 @@ namespace Salvus
 
             services.AddControllersWithViews();
 
+            services.AddHostedService<CoinUpdaterService>();
 
+            services.AddLogging(config =>
+            {
+                config.AddDebug();
+                config.AddConsole();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +73,7 @@ namespace Salvus
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
